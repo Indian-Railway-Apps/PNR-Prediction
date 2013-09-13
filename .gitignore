@@ -1,0 +1,10 @@
+gen
+bin
+.classpath
+.project
+/*.project
+/.classpath
+/.project
+project.properties
+/project.properties
+/.settings/org.eclipse.jdt.core.prefs
