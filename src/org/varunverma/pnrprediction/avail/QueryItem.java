@@ -40,6 +40,12 @@ public class QueryItem {
 		availInfo = new ArrayList<AvailabilityInfo>();
 	}
 	
+	public String toString(){
+		
+		return trainNo + "/" + travelDate + "/" + jClass + "/" + sourceCode + "/" + destinationCode;
+		
+	}
+	
 	public String getTrainNo() {
 		return trainNo;
 	}

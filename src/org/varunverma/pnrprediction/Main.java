@@ -62,7 +62,11 @@ public class Main extends Activity implements Invoker {
 
 	@Override
 	public void ProgressUpdate(ProgressInfo pi) {
-		// Nothing to do
+		
+		if(!pi.getProgressMessage().contentEquals("")){
+			tv.append("\n" + pi.getProgressMessage());
+		}
+		
 	}
 
 }

@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.Invoker;
+import org.varunverma.CommandExecuter.ProgressInfo;
 import org.varunverma.CommandExecuter.ResultObject;
 
 /**
@@ -55,9 +56,26 @@ public class FetchAvailabilityCommand extends Command {
 		Iterator<QueryItem> i = pendingList.iterator();
 
 		while (i.hasNext()) {
+			
+			QueryItem qi = i.next();
+			
+			// Continue with next one if this fails...
+			try{
+				
+				ProgressInfo pi = new ProgressInfo("Fetching avail for " + qi.toString());
+				publishProgress(pi);
+				
+				// Query the Status
+				qi.queryStatus();
+				
+			}catch(Exception e){
+				
+				String message = "Error while fetching avail for " + qi.toString();
+				ProgressInfo pi = new ProgressInfo(message);
+				publishProgress(pi);
+				
+			}
 
-			// Query the Status
-			i.next().queryStatus();
 			
 			Thread.sleep(10 * 1000);
 
@@ -127,7 +145,10 @@ public class FetchAvailabilityCommand extends Command {
 	
 	
 	private void saveStatus(List<QueryItem> queryItems) throws Exception{
-			
+		
+		ProgressInfo pi = new ProgressInfo("Saving Status");
+		publishProgress(pi);
+		
 		JSONArray availInfo = new JSONArray();
 		
 		Iterator<QueryItem> i = queryItems.iterator();
