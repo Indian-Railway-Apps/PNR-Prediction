@@ -8,19 +8,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Main" >
 
-    <Spinner
-        android:id="@+id/train_no"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:entries="@array/train_no"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <DatePicker
-        android:id="@+id/travel_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/train_no"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/textView" />
 
 </RelativeLayout>

@@ -1,18 +1,17 @@
-package org.varunverma.pnrprediction;
+package com.ayansh.pnrprediction.ui;
 
-import org.varunverma.CommandExecuter.Command;
-import org.varunverma.CommandExecuter.CommandExecuter;
 import org.varunverma.CommandExecuter.Invoker;
 import org.varunverma.CommandExecuter.ProgressInfo;
 import org.varunverma.CommandExecuter.ResultObject;
-import org.varunverma.pnrprediction.avail.FetchAvailabilityCommand;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.TextView;
 
-public class Main extends Activity implements Invoker {
+import com.ayansh.pnrprediction.R;
+import com.ayansh.pnrprediction.application.PPApplication;
+
+public class DebugView extends Activity implements Invoker {
 
 	private TextView tv;
 	
@@ -21,30 +20,12 @@ public class Main extends Activity implements Invoker {
 		
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.main);
+		setContentView(R.layout.debug_view);
 		
 		tv = (TextView) findViewById(R.id.textView);
 		
-		fetchAvailability();
-		
-	}
-
-	private void fetchAvailability() {
-		
-		CommandExecuter ce = new CommandExecuter();
-		
-		Command availCommand = new FetchAvailabilityCommand(this);
-		
-		ce.execute(availCommand);
-		tv.append("Command Execution Started");
-		
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		PPApplication.getInstance().getExecutingCommand().updateInvoker(this);
+				
 	}
 
 	@Override
@@ -66,6 +47,22 @@ public class Main extends Activity implements Invoker {
 		if(!pi.getProgressMessage().contentEquals("")){
 			tv.append("\n" + pi.getProgressMessage());
 		}
+		
+	}
+	
+	@Override
+	protected void onDestroy(){
+		
+		PPApplication.getInstance().getExecutingCommand().updateInvoker(new Invoker(){
+
+			@Override
+			public void NotifyCommandExecuted(ResultObject result) {}
+
+			@Override
+			public void ProgressUpdate(ProgressInfo progress) {}
+		});
+		
+		super.onDestroy();
 		
 	}
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.varunverma.pnrprediction.avail;
+package com.ayansh.pnrprediction.avail;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -91,7 +91,7 @@ public class FetchAvailabilityCommand extends Command {
 	
 		List<QueryItem> list = new ArrayList<QueryItem>();
 		
-		String queryURL = "http://pnr.varunverma.org/GetPendingItems.php";
+		String queryURL = "http://ayansh.com/pnr-prediction/GetPendingItems.php";
 		
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(queryURL);
@@ -164,7 +164,7 @@ public class FetchAvailabilityCommand extends Command {
 		}
 		
 
-		String saveURL = "http://pnr.varunverma.org/SaveAvailability.php";
+		String saveURL = "http://ayansh.com/pnr-prediction/SaveAvailability.php";
 
 		HttpClient httpclient = new DefaultHttpClient();
 		

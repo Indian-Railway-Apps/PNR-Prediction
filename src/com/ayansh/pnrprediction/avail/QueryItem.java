@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.varunverma.pnrprediction.avail;
+package com.ayansh.pnrprediction.avail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
