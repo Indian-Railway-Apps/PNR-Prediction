@@ -8,22 +8,49 @@
         android:minSdkVersion="9"
         android:targetSdkVersion="17" />
     
-    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="com.android.vending.BILLING" />
+	<uses-permission android:name="android.permission.INTERNET" /> 
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <activity
+            android:name="com.ayansh.pnrprediction.ui.SplashScreen"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
         <activity
             android:name="com.ayansh.pnrprediction.ui.Main"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.ayansh.pnrprediction.ui.Eula"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.EULA" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.ayansh.pnrprediction.ui.ProbabilityResult"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.PROBABILITY_RESULT" />
+            </intent-filter>
+        </activity>
+                
     </application>
 
 </manifest>

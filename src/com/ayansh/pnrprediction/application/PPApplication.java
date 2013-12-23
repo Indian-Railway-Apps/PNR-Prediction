@@ -14,6 +14,7 @@ import android.content.Context;
 public class PPApplication {
 
 	private static PPApplication app;
+	public static final String TAG = "PNR";
 	
 	private Context context;
 	private Command executingCommand;
@@ -49,6 +50,16 @@ public class PPApplication {
 	
 	public Command getExecutingCommand(){
 		return executingCommand;
+	}
+
+	public boolean isEULAAccepted() {
+		return true;
+		//TODO - check if EULA is accepted
+	}
+
+	public void setEULAResult(boolean b) {
+		// TODO Save EULA
+		
 	}
 	
 }
