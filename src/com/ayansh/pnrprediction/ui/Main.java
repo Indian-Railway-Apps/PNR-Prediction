@@ -1,9 +1,7 @@
 package com.ayansh.pnrprediction.ui;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.CommandExecuter;
@@ -13,6 +11,7 @@ import org.varunverma.CommandExecuter.ResultObject;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,17 +22,19 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ayansh.pnrprediction.R;
+import com.ayansh.pnrprediction.application.PNRStatusCommand;
 import com.ayansh.pnrprediction.application.PPApplication;
 import com.ayansh.pnrprediction.avail.FetchAvailabilityCommand;
 
 public class Main extends Activity implements OnClickListener {
 
 	private TextView pnrNo, trainNo, currentStatus;
-	private GregorianCalendar travelDate;
 	private Button travel_date;
 	private Spinner travelClass;
+	private ProgressDialog dialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class Main extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 		
 		// Start Fetch Availability.
-		//fetchAvailability();
+		fetchAvailability();
 		
 		Button getPNR = (Button) findViewById(R.id.get_pnr_details);
 		getPNR.setOnClickListener(this);
@@ -102,6 +103,7 @@ public class Main extends Activity implements OnClickListener {
 		switch(view.getId()){
 		
 		case R.id.get_pnr_details:
+			getPNRDetails();
 			break;
 			
 		case R.id.travel_date:
@@ -116,6 +118,55 @@ public class Main extends Activity implements OnClickListener {
 		
 	}
 
+	private void getPNRDetails() {
+		
+		String pnr = pnrNo.getEditableText().toString();
+		
+		if(pnr.length() < 10){
+			// Error !
+			Toast.makeText(this, "Wrong PNR", Toast.LENGTH_LONG).show();
+			return;
+		}
+		
+		dialog = ProgressDialog.show(this, "Fetching PNR Details", "Please wait while we fetch PNR Details");
+		
+		CommandExecuter ce = new CommandExecuter();
+		
+		PNRStatusCommand command = new PNRStatusCommand(new Invoker(){
+
+			@Override
+			public void NotifyCommandExecuted(ResultObject result) {
+				
+				dialog.dismiss();
+				if(result.isCommandExecutionSuccess()){
+					
+					trainNo.setText(result.getData().getString("TrainNo"));
+					currentStatus.setText(result.getData().getString("CurrentStatus"));
+					travel_date.setText(result.getData().getString("TravelDate"));
+					
+					String[] tcl = getResources().getStringArray(R.array.travel_class);
+					for(int i=0; i< tcl.length; i++){
+						
+						if(tcl[i].contentEquals(result.getData().getString("TravelClass"))){
+							travelClass.setSelection(i);
+							break;
+						}
+					}
+					
+				}
+				else{
+					Toast.makeText(getApplicationContext(), "Error while getting PNR Status", Toast.LENGTH_LONG).show();
+				}
+				
+			}
+
+			@Override
+			public void ProgressUpdate(ProgressInfo progress) {				
+			}}, pnr);
+		
+		ce.execute(command);
+	}
+
 	private void predictStatus() {
 		
 		String[] tclass = getResources().getStringArray(R.array.travel_class);
@@ -124,9 +175,7 @@ public class Main extends Activity implements OnClickListener {
 		String tCl = tclass[travelClass.getSelectedItemPosition()];
 		String cSt = currentStatus.getEditableText().toString();
 		
-		String tDt = String.valueOf(travelDate.get(Calendar.DAY_OF_MONTH)) + "-" +
-						String.valueOf(travelDate.get(Calendar.MONTH) + 1) + "-" +
-						String.valueOf(travelDate.get(Calendar.YEAR));
+		CharSequence tDt = travel_date.getText();
 		
 		Intent probResult = new Intent(Main.this, ProbabilityResult.class);
 		
@@ -152,8 +201,7 @@ public class Main extends Activity implements OnClickListener {
 			@Override
 			public void onDateSet(DatePicker view, int year, int month, int day) {
 				
-				travelDate = new GregorianCalendar(year, month, day);
-				travel_date.setText(DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(travelDate.getTime()));
+				travel_date.setText(day + "-" + ++month + "-" + year);
 				
 			}}, year, month, day);
 		

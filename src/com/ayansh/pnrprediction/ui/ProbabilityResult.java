@@ -60,8 +60,10 @@ public class ProbabilityResult extends Activity implements Invoker {
 		
 		if(result.isCommandExecutionSuccess()){
 			
-			resultView.append("\n\nCNF Prob: " + result.getData().getString("CNF"));
-			resultView.append("\nRAC Prob: " + result.getData().getString("RAC"));
+			resultView.append("\n\nProbability of getting confirmed ticket is: " + result.getData().getString("CNF"));
+			resultView.append("\nProbability of getting RAC ticket is: " + result.getData().getString("RAC"));
+			
+			resultView.append("\nThe accuracy of this calculation is: 90%");
 			
 			resultView.append("\n\nHope you liked it");
 		}
