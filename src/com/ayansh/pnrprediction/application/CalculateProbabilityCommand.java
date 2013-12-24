@@ -56,7 +56,7 @@ public class CalculateProbabilityCommand extends Command {
 
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		
-		nameValuePairs.add(new BasicNameValuePair("code", "Calculate-Probability"));
+		nameValuePairs.add(new BasicNameValuePair("code", "Calculate-Probability-Java"));
 		nameValuePairs.add(new BasicNameValuePair("pwd", "adminhoonmain"));
 		
 		nameValuePairs.add(new BasicNameValuePair("train_no", trainNo));

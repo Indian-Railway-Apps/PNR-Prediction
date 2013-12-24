@@ -43,7 +43,7 @@ public class Main extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 		
 		// Start Fetch Availability.
-		fetchAvailability();
+		//fetchAvailability();
 		
 		Button getPNR = (Button) findViewById(R.id.get_pnr_details);
 		getPNR.setOnClickListener(this);
