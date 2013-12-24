@@ -16,6 +16,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.Invoker;
 import org.varunverma.CommandExecuter.ResultObject;
@@ -83,9 +84,10 @@ public class CalculateProbabilityCommand extends Command {
 			builder.append(line);
 		}
 		
-		//JSONObject output = new JSONObject(builder.toString());
+		JSONObject output = new JSONObject(builder.toString());
 		
-		result.getData().putString("Output", builder.toString());
+		result.getData().putString("RAC", output.getString("RAC"));
+		result.getData().putString("CNF", output.getString("CNF"));
 	}
 
 }
