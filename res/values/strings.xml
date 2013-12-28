@@ -2,14 +2,14 @@
 <resources>
 
     <string name="app_name">Predict PNR Status</string>
-    <string name="action_settings">Settings</string>
+    <string name="buy">Upgrade to Premium</string>
     <string name="debug_view">Debug View</string>
     <string name="trainNo">Train No:</string>
     <string name="travelDate">Travel Date:</string>
     <string name="travelClass">Class:</string>
 	<string name="currentStatus">Curr. Status:</string>
 	<string name="predict_status">Predict Status</string>
-	<string name="cst_hint">WL/202</string>
+	<string name="cst_hint">GNWL60/WL50</string>
 	<string name="PNR">PNR:</string>
 	<string name="enter_pnr">Enter PNR</string>
     <string name="loading">Loading....</string>

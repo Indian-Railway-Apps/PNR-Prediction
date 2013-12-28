@@ -86,6 +86,7 @@ public class CalculateProbabilityCommand extends Command {
 		
 		JSONObject output = new JSONObject(builder.toString());
 		
+		result.getData().putInt("ResultCode", output.getInt("ResultCode"));
 		result.getData().putString("RAC", output.getString("RAC"));
 		result.getData().putString("CNF", output.getString("CNF"));
 	}

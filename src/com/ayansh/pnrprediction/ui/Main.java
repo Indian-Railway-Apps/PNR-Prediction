@@ -14,6 +14,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.ayansh.pnrprediction.R;
 import com.ayansh.pnrprediction.application.PNRStatusCommand;
 import com.ayansh.pnrprediction.application.PPApplication;
 import com.ayansh.pnrprediction.avail.FetchAvailabilityCommand;
+import com.ayansh.pnrprediction.billingutil.IabHelper;
 
 public class Main extends Activity implements OnClickListener {
 
@@ -51,7 +53,11 @@ public class Main extends Activity implements OnClickListener {
 		
 		travel_date = (Button) findViewById(R.id.travel_date);
 		travel_date.setOnClickListener(this);
-				
+		
+		GregorianCalendar c = new GregorianCalendar();
+		int month = c.get(Calendar.MONTH) + 1;
+		travel_date.setText(c.get(Calendar.DATE) + "-" + month + "-" + c.get(Calendar.YEAR));
+		
 		pnrNo = (TextView) findViewById(R.id.pnr_no);
 		trainNo = (TextView) findViewById(R.id.train_no);
 		currentStatus = (TextView) findViewById(R.id.current_status);
@@ -87,11 +93,30 @@ public class Main extends Activity implements OnClickListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		
+		if(false){
+			menu.findItem(R.id.show_debug_view).setVisible(false);
+		}
+		
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch(item.getItemId()){
+		
+		case R.id.buy:
+			Intent buy = new Intent(Main.this, ActivatePremiumFeatures.class);
+    		Main.this.startActivityForResult(buy,900);
+    		break;
+			
+		case R.id.show_debug_view:
+			Intent debug = new Intent(Main.this, DebugView.class);
+    		Main.this.startActivity(debug);
+    		break;
+		
+		}
 		
 		return true;
 		
@@ -207,4 +232,38 @@ public class Main extends Activity implements OnClickListener {
 		
 		dialog.show();
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		switch (requestCode) {
+
+		case 900:
+			if (data.getBooleanExtra("RestartApp", false)) {
+				finish();
+			}
+			break;
+
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+
+		// Close billing helper
+
+		if (isFinishing()) {
+
+			try {
+				IabHelper.getInstance().dispose();
+			} catch (Exception e) {
+				Log.w(PPApplication.TAG, e.getMessage(), e);
+			}
+
+			PPApplication.getInstance().close();
+
+		}
+
+		super.onDestroy();
+	}
+	
 }

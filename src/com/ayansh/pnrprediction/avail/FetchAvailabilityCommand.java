@@ -67,6 +67,11 @@ public class FetchAvailabilityCommand extends Command {
 				
 				// Query the Status
 				qi.queryStatus();
+
+				// Save Status
+				List<QueryItem> saveList = new ArrayList<QueryItem>();
+				saveList.add(qi);
+				saveStatus(saveList);
 				
 			}catch(Exception e){
 				
@@ -76,13 +81,9 @@ public class FetchAvailabilityCommand extends Command {
 				
 			}
 
-			
 			Thread.sleep(10 * 1000);
 
 		}
-		
-		// Save Status
-		saveStatus(pendingList);
 		
 	}
 	
