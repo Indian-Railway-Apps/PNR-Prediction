@@ -26,10 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ayansh.pnrprediction.R;
+import com.ayansh.pnrprediction.application.Constants;
 import com.ayansh.pnrprediction.application.PNRStatusCommand;
 import com.ayansh.pnrprediction.application.PPApplication;
 import com.ayansh.pnrprediction.avail.FetchAvailabilityCommand;
 import com.ayansh.pnrprediction.billingutil.IabHelper;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+import com.google.analytics.tracking.android.EasyTracker;
 
 public class Main extends Activity implements OnClickListener {
 
@@ -45,8 +49,24 @@ public class Main extends Activity implements OnClickListener {
 		
 		setContentView(R.layout.main);
 		
+		// Tracking.
+        EasyTracker.getInstance().activityStart(this);
+        
 		// Start Fetch Availability.
 		fetchAvailability();
+		
+		// Show Ads
+		if (!Constants.isPremiumVersion()) {
+
+			// Show Ad.
+			AdRequest adRequest = new AdRequest();
+			adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
+			adRequest.addTestDevice("E16F3DE5DF824FE222EDDA27A63E2F8A");
+			AdView adView = (AdView) findViewById(R.id.adView);
+
+			// Start loading the ad in the background.
+			adView.loadAd(adRequest);
+		}
 		
 		Button getPNR = (Button) findViewById(R.id.get_pnr_details);
 		getPNR.setOnClickListener(this);
@@ -94,10 +114,8 @@ public class Main extends Activity implements OnClickListener {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		
-		if(false){
-			menu.findItem(R.id.show_debug_view).setVisible(false);
-		}
-		
+		menu.findItem(R.id.show_debug_view).setVisible(false);
+
 		return true;
 	}
 
@@ -114,6 +132,22 @@ public class Main extends Activity implements OnClickListener {
 		case R.id.show_debug_view:
 			Intent debug = new Intent(Main.this, DebugView.class);
     		Main.this.startActivity(debug);
+    		break;
+    		
+		case R.id.Help:
+			EasyTracker.getTracker().sendView("/Help");
+			Intent help = new Intent(Main.this, DisplayFile.class);
+			help.putExtra("File", "help.html");
+			help.putExtra("Title", "Help: ");
+			Main.this.startActivity(help);
+    		break;
+    		
+    	case R.id.About:
+    		EasyTracker.getTracker().sendView("/About");
+    		Intent info = new Intent(Main.this, DisplayFile.class);
+			info.putExtra("File", "about.html");
+			info.putExtra("Title", "About: ");
+			Main.this.startActivity(info);
     		break;
 		
 		}
@@ -194,6 +228,16 @@ public class Main extends Activity implements OnClickListener {
 
 	private void predictStatus() {
 		
+		// Validate input.
+		try {
+			
+			validateInput();
+			
+		} catch (Exception e) {
+			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+			return;
+		}
+		
 		String[] tclass = getResources().getStringArray(R.array.travel_class);
 		
 		String tNo = trainNo.getEditableText().toString();
@@ -211,6 +255,24 @@ public class Main extends Activity implements OnClickListener {
 		
 		startActivity(probResult);
 		
+	}
+	
+	private void validateInput() throws Exception{
+	
+		// Check that train no is populated and is 5 char.
+		String tNo = trainNo.getEditableText().toString();
+		if(tNo == null || tNo.length() < 5){
+			throw new Exception("Train number is not valid");
+		}
+		
+		// Check the current status
+		String cSt = currentStatus.getEditableText().toString();
+		if(cSt.contains("WL") || cSt.contains("RAC")){
+			// This is ok
+		}
+		else{
+			throw new Exception("Current status is not in correct format.");
+		}
 	}
 
 	private void getTravelDateFromUser() {
@@ -265,5 +327,11 @@ public class Main extends Activity implements OnClickListener {
 
 		super.onDestroy();
 	}
-	
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		// The rest of your onStop() code.
+		EasyTracker.getInstance().activityStop(this);
+	}
 }

@@ -33,7 +33,7 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 	private PPApplicationDB(Context c){
 		
 		super(c, dbName, null, dbVersion);
-		
+		app = PPApplication.getInstance();
 	}
 	
 	static PPApplicationDB getInstance(Context c){

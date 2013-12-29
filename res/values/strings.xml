@@ -3,6 +3,8 @@
 
     <string name="app_name">Predict PNR Status</string>
     <string name="buy">Upgrade to Premium</string>
+    <string name="help">Help</string>
+    <string name="about">About</string>
     <string name="debug_view">Debug View</string>
     <string name="trainNo">Train No:</string>
     <string name="travelDate">Travel Date:</string>

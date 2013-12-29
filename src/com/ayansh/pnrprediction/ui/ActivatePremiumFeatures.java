@@ -23,6 +23,7 @@ import com.ayansh.pnrprediction.billingutil.IabHelper;
 import com.ayansh.pnrprediction.billingutil.IabHelper.OnIabPurchaseFinishedListener;
 import com.ayansh.pnrprediction.billingutil.IabResult;
 import com.ayansh.pnrprediction.billingutil.Purchase;
+import com.google.analytics.tracking.android.EasyTracker;
 
 /**
  * @author varun
@@ -40,6 +41,9 @@ public class ActivatePremiumFeatures extends Activity implements
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.premium_features);
+		
+		// Tracking.
+		EasyTracker.getInstance().activityStart(this);
 		
 		prodName = (TextView) findViewById(R.id.product_name);
 		prodDesc = (TextView) findViewById(R.id.product_desc);
@@ -215,5 +219,12 @@ public class ActivatePremiumFeatures extends Activity implements
 		// Close this activity
 		finish();
 		
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		// The rest of your onStop() code.
+		EasyTracker.getInstance().activityStop(this);
 	}
 }

@@ -21,7 +21,11 @@ import android.widget.TextView;
 
 import com.ayansh.pnrprediction.R;
 import com.ayansh.pnrprediction.application.CalculateProbabilityCommand;
+import com.ayansh.pnrprediction.application.Constants;
 import com.ayansh.pnrprediction.application.PPApplication;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+import com.google.analytics.tracking.android.EasyTracker;
 
 /**
  * @author I041474
@@ -38,6 +42,22 @@ public class ProbabilityResult extends Activity implements Invoker {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.probability_details);
+		
+		// Tracking.
+		EasyTracker.getInstance().activityStart(this);
+		
+		// Show Ads
+		if (!Constants.isPremiumVersion()) {
+
+			// Show Ad.
+			AdRequest adRequest = new AdRequest();
+			adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
+			adRequest.addTestDevice("E16F3DE5DF824FE222EDDA27A63E2F8A");
+			AdView adView = (AdView) findViewById(R.id.adView);
+
+			// Start loading the ad in the background.
+			adView.loadAd(adRequest);
+		}
 		
 		resultView = (TextView) findViewById(R.id.result_view);
 		
@@ -78,7 +98,11 @@ public class ProbabilityResult extends Activity implements Invoker {
 		String counterName = getCounterName();
 		String counterValue = PPApplication.getInstance().getOptions().get(counterName);
 		
-		if(Integer.getInteger(counterValue) >= 30){
+		if(counterValue == null){
+			counterValue = "0";
+		}
+		
+		if(Integer.valueOf(counterValue) >= 30){
 			return false;
 		}
 		else{
@@ -90,11 +114,9 @@ public class ProbabilityResult extends Activity implements Invoker {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		
-		if(false){
-			menu.findItem(R.id.show_debug_view).setVisible(false);
-		}
-		
+
+		menu.findItem(R.id.show_debug_view).setVisible(false);
+
 		return true;
 	}
 
@@ -170,6 +192,13 @@ public class ProbabilityResult extends Activity implements Invoker {
 		String counterName = year + month + "_Counter";
 		
 		return counterName;
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		// The rest of your onStop() code.
+		EasyTracker.getInstance().activityStop(this);
 	}
 
 }
