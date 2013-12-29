@@ -99,6 +99,11 @@ public class SplashScreen extends Activity implements
 				startSplashScreenActivity();
 			}
 			break;
+			
+		case 900:
+			app.addParameter("FirstLaunch", "Completed");
+			startApp();
+			break;
 		}
 	}
 	
@@ -108,9 +113,16 @@ public class SplashScreen extends Activity implements
 			return;
 		}
 		
+		// Show help for the 1st launch
+		if(app.getOptions().get("FirstLaunch") == null){
+			// This is first launch !
+			showHelp();
+			return;
+		}
+		
 		appStarted = true;
 		
-		// Start the Quiz List
+		// Start the Main
 		Log.i(PPApplication.TAG, "Start Main");
 		Intent start = new Intent(SplashScreen.this, Main.class);
 		SplashScreen.this.startActivity(start);
@@ -118,6 +130,14 @@ public class SplashScreen extends Activity implements
 		// Kill this activity.
 		Log.i(PPApplication.TAG, "Kill Splash screen");
 		SplashScreen.this.finish();
+	}
+
+	private void showHelp() {
+		
+		Intent help = new Intent(SplashScreen.this, DisplayFile.class);
+		help.putExtra("File", "help.html");
+		help.putExtra("Title", "Help: ");
+		SplashScreen.this.startActivityForResult(help, 900);
 	}
 
 	@Override

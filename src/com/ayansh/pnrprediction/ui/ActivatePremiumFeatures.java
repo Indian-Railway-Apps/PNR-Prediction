@@ -110,19 +110,20 @@ public class ActivatePremiumFeatures extends Activity implements
 		
 		prodName.setText("We need your help");
 		
-		String desc = "We hope that this application is useful to you. "
-				+ "Please recommend this application to your friends\n."
-				+ "It is not easy to develop such algorithm / system. "
+		String desc = "We hope that this application is useful to you.\n"
+				+ "Please recommend this application to your friends.\n\n"
+				+ "A lot of effort and resources have been put to develop this application, and algorithm."
 				+ "In order to continue this application and serve all passengers across all sectors, "
-				+ "we need bigger systems and more computing power\n"
+				+ "we need bigger systems and more computing power.\n\n"
 				+ "We need your support to continue this project, "
-				+ "We request you to consider donating for this project. "
+				+ "We request you to consider donating for this project.\n\n"
 				+ "The funds raised will be used to pay for"
 				+ "a bigger and powerful server and pay for other services that cost money.";
 
 		prodDesc.setText(desc);
 		
-		String help = "By purchasing this premium service, all advertisements from the app will be removed permanently.\n"
+		String help = "By purchasing this premium service, all advertisements from the app will be removed permanently.\n\n" +
+				"Additionally, the current limit of 30 queries per month will be removed and you will have unlimited access.\n\n"
 				+ "This is a one time purchase only.";
 		
 		prodHelp.setText(help);

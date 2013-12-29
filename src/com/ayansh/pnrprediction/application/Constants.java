@@ -13,15 +13,16 @@ public class Constants {
 	private static String productTitle, productDescription, productPrice;
 	
 	public static String getPublicKey() {
-		return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj" +
-				"bCiPdAIohSBBUgW4L5MbLDdQJammxP1oIP0mVwG9XtQ9" +
-				"rC+zcgWXGqlN2dJ/qphf2yH6hPXlvdUCOKujnR3CEjZ6" +
-				"PUpdexWJX2G6vlB4ziMIFeo0fKsxNMob+Tyz7zqa/bOj" +
-				"EeoJRDK7PTm1jFwhX7NvYsdCj52zOb2iCxdMMUrhHdiB" +
-				"wtmhgv88icQ1vL2oyEvv6zow6PxZuFK1uw9eXQKVU5Mq" +
-				"VwkyFArENDoM0ReACWCb3IIc9Flb9PFW4gHDiHZiGc18" +
-				"H2cDDeyXBtUUUc23TmxC6CFGv8rhbRoQHuVOE8YKE4+2" +
-				"sg8m9vA6iA+pMUmb/iQ1Fbizo37S7HIqwIDAQAB";
+		return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQ" +
+				"EAvBxmhNvSTAsBy8oJFx74Zh7mIbfq79q5Sa+EFtv" +
+				"Ir9pe1KzO06bztHQvNbn5f4mca2E6b25MrD7+2pGj" +
+				"+wr2A7qk92XxdctCY8D+gZ7znFtwPwxbUYBTf5LoD" +
+				"RnLY61UIJSLtXsq0gt8G05Kxva9Sx7eBLJXtf9fLs" +
+				"qH/CAUk1JrER4266gUm3KQK0hNVEYnelH08FXX3jM" +
+				"uQq6Zf2QAXUpcU7y9E4bGlPo4j494YX8P1TxvGl6V" +
+				"dF9nX8RdnDQmsR1kkjGrfVf9d3GRbzjffe0bg9Cj+" +
+				"27cV6K8fiyuupWxasr9yjQxFA7FWA2xFa57PtRljm" +
+				"U+1oOMc+KaKfxxHwIDAQAB";
 	}
 
 	public static String getProductKey() {
