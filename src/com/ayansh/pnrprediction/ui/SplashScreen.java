@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -104,6 +105,10 @@ public class SplashScreen extends Activity implements
 			app.addParameter("FirstLaunch", "Completed");
 			startApp();
 			break;
+			
+		case 901:
+			startApp();
+			break;
 		}
 	}
 	
@@ -120,6 +125,24 @@ public class SplashScreen extends Activity implements
 			return;
 		}
 		
+		// Check if version is updated.
+		int oldAppVersion = app.getOldAppVersion();
+		int newAppVersion;
+		try {
+			newAppVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+		} catch (NameNotFoundException e) {
+			newAppVersion = 0;
+			Log.e(PPApplication.TAG, e.getMessage(), e);
+		}
+		
+		if(newAppVersion > oldAppVersion ){
+			// Update App Version
+			app.updateVersion();
+			
+			showWhatsNew();
+			return;
+		}
+		
 		appStarted = true;
 		
 		// Start the Main
@@ -130,6 +153,14 @@ public class SplashScreen extends Activity implements
 		// Kill this activity.
 		Log.i(PPApplication.TAG, "Kill Splash screen");
 		SplashScreen.this.finish();
+	}
+
+	private void showWhatsNew() {
+		
+		Intent newFeatures = new Intent(SplashScreen.this, DisplayFile.class);
+		newFeatures.putExtra("File", "NewFeatures.html");
+		newFeatures.putExtra("Title", "New Features: ");
+		SplashScreen.this.startActivityForResult(newFeatures, 901);
 	}
 
 	private void showHelp() {

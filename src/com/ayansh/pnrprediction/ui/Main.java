@@ -243,11 +243,13 @@ public class Main extends Activity implements OnClickListener {
 		String tNo = trainNo.getEditableText().toString();
 		String tCl = tclass[travelClass.getSelectedItemPosition()];
 		String cSt = currentStatus.getEditableText().toString();
+		String pnr = pnrNo.getEditableText().toString(); 
 		
 		CharSequence tDt = travel_date.getText();
 		
 		Intent probResult = new Intent(Main.this, ProbabilityResult.class);
 		
+		probResult.putExtra("PNR", pnr);
 		probResult.putExtra("TrainNo", tNo);
 		probResult.putExtra("TravelDate", tDt);
 		probResult.putExtra("TravelClass", tCl);

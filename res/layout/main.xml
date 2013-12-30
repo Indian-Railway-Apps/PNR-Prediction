@@ -141,6 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="65"
                 android:ems="10"
+                android:inputType="textCapCharacters"
                 android:hint="@string/cst_hint" >
             </EditText>
         </LinearLayout>

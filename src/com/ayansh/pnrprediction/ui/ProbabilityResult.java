@@ -68,9 +68,10 @@ public class ProbabilityResult extends Activity implements Invoker {
 			String tNo = getIntent().getStringExtra("TrainNo");
 			String tCl = getIntent().getStringExtra("TravelClass");
 			String cSt = getIntent().getStringExtra("CurrentStatus");
-			String tDt = getIntent().getStringExtra("TravelDate");;
+			String tDt = getIntent().getStringExtra("TravelDate");
+			String pnr = getIntent().getStringExtra("PNR");
 			
-			CalculateProbabilityCommand command = new CalculateProbabilityCommand(this, tNo, tDt, tCl, cSt);
+			CalculateProbabilityCommand command = new CalculateProbabilityCommand(this, pnr, tNo, tDt, tCl, cSt);
 
 			CommandExecuter ce = new CommandExecuter();
 			ce.execute(command);
@@ -159,18 +160,27 @@ public class ProbabilityResult extends Activity implements Invoker {
 		
 		pd.dismiss();
 		
-		if(result.isCommandExecutionSuccess() && result.getData().getInt("ResultCode") == 0){
+		if(result.isCommandExecutionSuccess()){
 			
-			resultView.append("\n\nProbability of getting confirmed ticket is: " + result.getData().getString("CNF"));
-			resultView.append("\nProbability of getting RAC ticket is: " + result.getData().getString("RAC"));
+			if(result.getData().getInt("ResultCode") == 0){
+				
+				resultView.append("\n\nProbability of getting confirmed ticket is: " + result.getData().getString("CNF"));
+				resultView.append("\nProbability of getting RAC ticket is: " + result.getData().getString("RAC"));
+				
+				//resultView.append("\nThe accuracy of this calculation is: 90%");
+				
+				resultView.append("\n\nHope you liked it");
+				
+				// Success. Increment the counter for this month.
+				String counterName = getCounterName();
+				PPApplication.getInstance().incrementCounter(counterName);
+			}
+			else{
+				
+				resultView.append("\n\nError occured while calculating probability.");
+				resultView.append("\n" + result.getData().getString("Message"));
+			}
 			
-			resultView.append("\nThe accuracy of this calculation is: 90%");
-			
-			resultView.append("\n\nHope you liked it");
-			
-			// Success. Increment the counter for this month.
-			String counterName = getCounterName();
-			PPApplication.getInstance().incrementCounter(counterName);
 		}
 		else{
 			

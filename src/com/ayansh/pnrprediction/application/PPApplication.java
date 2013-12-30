@@ -10,6 +10,8 @@ import java.util.List;
 import org.varunverma.CommandExecuter.Command;
 
 import android.content.Context;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.Log;
 
 /**
  * @author Varun Verma
@@ -144,6 +146,28 @@ public class PPApplication {
 		
 		addParameter(counterName, counterValue);
 		
+	}
+	
+	public int getOldAppVersion() {
+		String versionCode = Options.get("AppVersionCode");
+		if(versionCode == null || versionCode.contentEquals("")){
+			versionCode = "0";
+		}
+		return Integer.valueOf(versionCode);
+	}
+	
+	public void updateVersion() {
+		// Update Version
+		
+		int version;
+		try {
+			version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+		} catch (NameNotFoundException e) {
+			version = 0;
+			Log.e(TAG, e.getMessage(), e);
+		}
+
+		addParameter("AppVersionCode", String.valueOf(version));
 	}
 
 }

@@ -27,15 +27,16 @@ import org.varunverma.CommandExecuter.ResultObject;
  */
 public class CalculateProbabilityCommand extends Command {
 
-	private String trainNo, travelDate, trainClass, currentStatus;
+	private String PNR, trainNo, travelDate, trainClass, currentStatus;
 	
 	/**
 	 * @param caller
 	 */
-	public CalculateProbabilityCommand(Invoker caller, String tNo, String tDt, String tCl, String cSt) {
+	public CalculateProbabilityCommand(Invoker caller, String pnr, String tNo, String tDt, String tCl, String cSt) {
 		
 		super(caller);
 		
+		PNR = pnr;
 		trainNo = tNo;
 		travelDate = tDt;
 		trainClass = tCl;
@@ -60,6 +61,7 @@ public class CalculateProbabilityCommand extends Command {
 		nameValuePairs.add(new BasicNameValuePair("code", "Calculate-Probability-Java"));
 		nameValuePairs.add(new BasicNameValuePair("pwd", "adminhoonmain"));
 		
+		nameValuePairs.add(new BasicNameValuePair("PNR", PNR));
 		nameValuePairs.add(new BasicNameValuePair("train_no", trainNo));
 		nameValuePairs.add(new BasicNameValuePair("tr_date", travelDate));
 		nameValuePairs.add(new BasicNameValuePair("tr_class", trainClass));
@@ -89,6 +91,7 @@ public class CalculateProbabilityCommand extends Command {
 		result.getData().putInt("ResultCode", output.getInt("ResultCode"));
 		result.getData().putString("RAC", output.getString("RACProbability"));
 		result.getData().putString("CNF", output.getString("CNFProbability"));
+		result.getData().putString("Message", output.getString("Message"));
 	}
 
 }
