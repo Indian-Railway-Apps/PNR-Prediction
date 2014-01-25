@@ -3,9 +3,6 @@
  */
 package com.ayansh.pnrprediction.ui;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import org.varunverma.CommandExecuter.CommandExecuter;
 import org.varunverma.CommandExecuter.Invoker;
 import org.varunverma.CommandExecuter.ProgressInfo;
@@ -22,7 +19,6 @@ import android.widget.TextView;
 import com.ayansh.pnrprediction.R;
 import com.ayansh.pnrprediction.application.CalculateProbabilityCommand;
 import com.ayansh.pnrprediction.application.Constants;
-import com.ayansh.pnrprediction.application.PPApplication;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -60,55 +56,29 @@ public class ProbabilityResult extends Activity implements Invoker {
 		}
 		
 		resultView = (TextView) findViewById(R.id.result_view);
-		
-		if(checkLimit()){
-		
-			pd = ProgressDialog.show(this, "Calculating", "Please wait... the system is simulating...");
-			
-			String tNo = getIntent().getStringExtra("TrainNo");
-			String tCl = getIntent().getStringExtra("TravelClass");
-			String cSt = getIntent().getStringExtra("CurrentStatus");
-			String tDt = getIntent().getStringExtra("TravelDate");
-			String pnr = getIntent().getStringExtra("PNR");
-			
-			CalculateProbabilityCommand command = new CalculateProbabilityCommand(this, pnr, tNo, tDt, tCl, cSt);
+				
+		pd = ProgressDialog.show(this, "Calculating",
+				"Please wait... the system is simulating...");
 
-			CommandExecuter ce = new CommandExecuter();
-			ce.execute(command);
+		String tNo = getIntent().getStringExtra("TrainNo");
+		String tCl = getIntent().getStringExtra("TravelClass");
+		String cSt = getIntent().getStringExtra("CurrentStatus");
+		String tDt = getIntent().getStringExtra("TravelDate");
+		String pnr = getIntent().getStringExtra("PNR");
+		String fs = getIntent().getStringExtra("FromStation");
+		String ts = getIntent().getStringExtra("ToStation");
 
-			resultView.append("Current Status is: " + cSt);
-			resultView.append("\nTrain No is: " + tNo);
-			resultView.append("\nTravel Date is: " + tDt);
-			resultView.append("\nTrain Class is: " + tCl);
-			
-		}
-		else{
-			
-			String error = "You have crossed the montly limit of 30 queries.\n" +
-					"Sorry, but in order to ensure that the system is not overloaded, " +
-					"we have to limit the number of queries from each mobile\n\n" +
-					"In order to get un-limited access, please upgrade to premium version.";
-			
-			resultView.append(error);
-		}
-		
-	}
+		CalculateProbabilityCommand command = new CalculateProbabilityCommand(
+				this, pnr, tNo, tDt, tCl, cSt, fs, ts);
 
-	private boolean checkLimit() {
+		CommandExecuter ce = new CommandExecuter();
+		ce.execute(command);
 
-		String counterName = getCounterName();
-		String counterValue = PPApplication.getInstance().getOptions().get(counterName);
+		resultView.append("Current Status is: " + cSt);
+		resultView.append("\nTrain No is: " + tNo);
+		resultView.append("\nTravel Date is: " + tDt);
+		resultView.append("\nTrain Class is: " + tCl);
 		
-		if(counterValue == null){
-			counterValue = "0";
-		}
-		
-		if(Integer.valueOf(counterValue) >= 30){
-			return false;
-		}
-		else{
-			return true;
-		}
 	}
 
 	@Override
@@ -171,9 +141,6 @@ public class ProbabilityResult extends Activity implements Invoker {
 				
 				resultView.append("\n\nHope you liked it");
 				
-				// Success. Increment the counter for this month.
-				String counterName = getCounterName();
-				PPApplication.getInstance().incrementCounter(counterName);
 			}
 			else{
 				
@@ -192,16 +159,6 @@ public class ProbabilityResult extends Activity implements Invoker {
 	@Override
 	public void ProgressUpdate(ProgressInfo progress) {
 		// Nothing to do
-	}
-	
-	private String getCounterName(){
-		
-		GregorianCalendar today = new GregorianCalendar();
-		int year = today.get(Calendar.YEAR);
-		int month = today.get(Calendar.MONTH);
-		String counterName = year + month + "_Counter";
-		
-		return counterName;
 	}
 	
 	@Override

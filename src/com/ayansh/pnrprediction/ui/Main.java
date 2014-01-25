@@ -37,7 +37,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 
 public class Main extends Activity implements OnClickListener {
 
-	private TextView pnrNo, trainNo, currentStatus;
+	private TextView pnrNo, trainNo, currentStatus, fromStation, toStation;
 	private Button travel_date;
 	private Spinner travelClass;
 	private ProgressDialog dialog;
@@ -81,6 +81,8 @@ public class Main extends Activity implements OnClickListener {
 		pnrNo = (TextView) findViewById(R.id.pnr_no);
 		trainNo = (TextView) findViewById(R.id.train_no);
 		currentStatus = (TextView) findViewById(R.id.current_status);
+		fromStation = (TextView) findViewById(R.id.from_station);
+		toStation = (TextView) findViewById(R.id.to_station);
 		
 		Button predictStatus = (Button) findViewById(R.id.predict_status);
 		predictStatus.setOnClickListener(this);
@@ -243,7 +245,9 @@ public class Main extends Activity implements OnClickListener {
 		String tNo = trainNo.getEditableText().toString();
 		String tCl = tclass[travelClass.getSelectedItemPosition()];
 		String cSt = currentStatus.getEditableText().toString();
-		String pnr = pnrNo.getEditableText().toString(); 
+		String pnr = pnrNo.getEditableText().toString();
+		String fs = fromStation.getEditableText().toString();
+		String ts = toStation.getEditableText().toString();
 		
 		CharSequence tDt = travel_date.getText();
 		
@@ -254,6 +258,8 @@ public class Main extends Activity implements OnClickListener {
 		probResult.putExtra("TravelDate", tDt);
 		probResult.putExtra("TravelClass", tCl);
 		probResult.putExtra("CurrentStatus", cSt);
+		probResult.putExtra("FromStation", fs);
+		probResult.putExtra("ToStation", ts);
 		
 		startActivity(probResult);
 		
@@ -274,6 +280,18 @@ public class Main extends Activity implements OnClickListener {
 		}
 		else{
 			throw new Exception("Current status is not in correct format.");
+		}
+		
+		// Check From Station and to Station
+		String fs = fromStation.getEditableText().toString();
+		String ts = toStation.getEditableText().toString();
+		
+		if(fs == null || fs.contentEquals("")){
+			throw new Exception("Please enter From Station Code");
+		}
+		
+		if(ts == null || ts.contentEquals("")){
+			throw new Exception("Please enter To Station Code");
 		}
 	}
 

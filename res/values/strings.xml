@@ -7,6 +7,8 @@
     <string name="about">About</string>
     <string name="debug_view">Debug View</string>
     <string name="trainNo">Train No:</string>
+    <string name="fromStation">From Station:</string>
+    <string name="toStation">To Station:</string>
     <string name="travelDate">Travel Date:</string>
     <string name="travelClass">Class:</string>
 	<string name="currentStatus">Curr. Status:</string>

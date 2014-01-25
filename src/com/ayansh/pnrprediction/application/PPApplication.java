@@ -131,22 +131,6 @@ public class PPApplication {
 		
 		return success;
 	}
-
-	public void incrementCounter(String counterName) {
-
-		String counterValue = Options.get(counterName);
-		if(counterValue == null){
-			counterValue = "1";
-		}
-		else{
-			int value = Integer.valueOf(counterValue);
-			value++;
-			counterValue = String.valueOf(value);
-		}
-		
-		addParameter(counterName, counterValue);
-		
-	}
 	
 	public int getOldAppVersion() {
 		String versionCode = Options.get("AppVersionCode");

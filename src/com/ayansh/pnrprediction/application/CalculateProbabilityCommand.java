@@ -27,12 +27,12 @@ import org.varunverma.CommandExecuter.ResultObject;
  */
 public class CalculateProbabilityCommand extends Command {
 
-	private String PNR, trainNo, travelDate, trainClass, currentStatus;
+	private String PNR, trainNo, travelDate, trainClass, currentStatus, fromStation, toStation;
 	
 	/**
 	 * @param caller
 	 */
-	public CalculateProbabilityCommand(Invoker caller, String pnr, String tNo, String tDt, String tCl, String cSt) {
+	public CalculateProbabilityCommand(Invoker caller, String pnr, String tNo, String tDt, String tCl, String cSt, String fs, String ts) {
 		
 		super(caller);
 		
@@ -41,7 +41,8 @@ public class CalculateProbabilityCommand extends Command {
 		travelDate = tDt;
 		trainClass = tCl;
 		currentStatus = cSt;
-		
+		fromStation = fs;
+		toStation = ts;
 	}
 
 	/* (non-Javadoc)
@@ -55,17 +56,24 @@ public class CalculateProbabilityCommand extends Command {
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(url);
+		httppost.setHeader("Referer", "FromTheAndroidApp");
 
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		
 		nameValuePairs.add(new BasicNameValuePair("code", "Calculate-Probability-Java"));
 		nameValuePairs.add(new BasicNameValuePair("pwd", "adminhoonmain"));
+		nameValuePairs.add(new BasicNameValuePair("accountid", ""));
 		
-		nameValuePairs.add(new BasicNameValuePair("PNR", PNR));
-		nameValuePairs.add(new BasicNameValuePair("train_no", trainNo));
-		nameValuePairs.add(new BasicNameValuePair("tr_date", travelDate));
-		nameValuePairs.add(new BasicNameValuePair("tr_class", trainClass));
-		nameValuePairs.add(new BasicNameValuePair("curr_status", currentStatus));
+		JSONObject input = new JSONObject();
+		input.put("PNR", PNR);
+		input.put("TrainNo", trainNo);
+		input.put("TravelDate", travelDate);
+		input.put("TravelClass", trainClass);
+		input.put("CurrentStatus", currentStatus);
+		input.put("FromStation", fromStation);
+		input.put("ToStation", toStation);
+		
+		nameValuePairs.add(new BasicNameValuePair("input", input.toString()));
 		
 		httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		
