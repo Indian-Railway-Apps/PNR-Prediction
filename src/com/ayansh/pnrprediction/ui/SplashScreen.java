@@ -65,7 +65,10 @@ public class SplashScreen extends Activity implements
 	}
 	
 	private void startSplashScreenActivity() {
-			
+		
+		// Register application.
+        app.registerAppForGCM();
+        
 		// Instantiate billing helper class
 		billingHelper = IabHelper.getInstance(this, Constants.getPublicKey());
 		

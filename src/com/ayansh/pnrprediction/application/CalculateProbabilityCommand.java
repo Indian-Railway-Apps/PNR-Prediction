@@ -21,6 +21,9 @@ import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.Invoker;
 import org.varunverma.CommandExecuter.ResultObject;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+
 /**
  * @author I041474
  *
@@ -51,6 +54,8 @@ public class CalculateProbabilityCommand extends Command {
 	@Override
 	protected void execute(ResultObject result) throws Exception {
 
+		PPApplication app = PPApplication.getInstance();
+		
 		String url = "http://ayansh.com/pnr-prediction/INR-Utility.php";
 		
 		// Create a new HttpClient and Post Header
@@ -60,9 +65,18 @@ public class CalculateProbabilityCommand extends Command {
 
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		
+		// Get Account ID
+		String accountId = app.getOptions().get("EMail");
+		
+		if(accountId == null){
+			Account[] accounts = AccountManager.get(app.getContext()).getAccountsByType("com.google");
+			accountId = accounts[0].name;
+			app.addParameter("EMail", accountId);
+		}
+		
 		nameValuePairs.add(new BasicNameValuePair("code", "Calculate-Probability-Java"));
 		nameValuePairs.add(new BasicNameValuePair("pwd", "adminhoonmain"));
-		nameValuePairs.add(new BasicNameValuePair("accountid", ""));
+		nameValuePairs.add(new BasicNameValuePair("accountid", accountId));
 		
 		JSONObject input = new JSONObject();
 		input.put("PNR", PNR);

@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
+import com.google.android.gcm.GCMRegistrar;
+
 /**
  * @author Varun Verma
  *
@@ -21,6 +23,7 @@ public class PPApplication {
 
 	private static PPApplication app;
 	public static final String TAG = "PNR";
+	public final static String SenderId = "492119277184";
 	
 	private Context context;
 	private Command executingCommand;
@@ -62,6 +65,10 @@ public class PPApplication {
 		
 		executingCommand = c;
 		
+	}
+	
+	public Context getContext(){
+		return context;
 	}
 	
 	public Command getExecutingCommand(){
@@ -152,6 +159,27 @@ public class PPApplication {
 		}
 
 		addParameter("AppVersionCode", String.valueOf(version));
+	}
+
+	public void registerAppForGCM() {
+		
+		// Register this app
+		String regId1 = Options.get("RegistrationId");
+		String regId2 = GCMRegistrar.getRegistrationId(context);
+
+		if (regId1 == null || regId1.contentEquals("") || regId2 == null
+				|| regId2.contentEquals("")) {
+			// Application is not registered
+			Log.v(TAG, "Registering app with GCM");
+
+			// Remove parameters
+			removeParameter("RegistrationId");
+			removeParameter("RegistrationStatus");
+
+			// Register
+			GCMRegistrar.register(context, SenderId);
+		}
+				
 	}
 
 }
