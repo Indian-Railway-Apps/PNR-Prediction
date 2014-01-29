@@ -20,7 +20,7 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
 
-	public GCMIntentService(java.lang.String... senderIds){
+	public GCMIntentService(){
 		super(PPApplication.SenderId);
 	}
 	
