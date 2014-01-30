@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.CommandExecuter;
 import org.varunverma.CommandExecuter.Invoker;
+import org.varunverma.CommandExecuter.MultiCommand;
 import org.varunverma.CommandExecuter.ProgressInfo;
 import org.varunverma.CommandExecuter.ResultObject;
 
@@ -29,6 +30,7 @@ import com.ayansh.pnrprediction.R;
 import com.ayansh.pnrprediction.application.Constants;
 import com.ayansh.pnrprediction.application.PNRStatusCommand;
 import com.ayansh.pnrprediction.application.PPApplication;
+import com.ayansh.pnrprediction.application.SaveRegIdCommand;
 import com.ayansh.pnrprediction.avail.FetchAvailabilityCommand;
 import com.ayansh.pnrprediction.billingutil.IabHelper;
 import com.google.ads.AdRequest;
@@ -94,7 +96,7 @@ public class Main extends Activity implements OnClickListener {
 		
 		CommandExecuter ce = new CommandExecuter();
 		
-		Command availCommand = new FetchAvailabilityCommand(new Invoker(){
+		Invoker dummy = new Invoker(){
 
 			@Override
 			public void NotifyCommandExecuted(ResultObject result) {
@@ -104,11 +106,31 @@ public class Main extends Activity implements OnClickListener {
 			@Override
 			public void ProgressUpdate(ProgressInfo progress) {
 				// Nothing
-			}});
+			}};
 		
-		ce.execute(availCommand);
+		MultiCommand command = new MultiCommand(dummy);
+			
+		PPApplication app = PPApplication.getInstance();
 		
-		PPApplication.getInstance().setExecutingCommand(availCommand);
+		String regStatus = app.getOptions().get("RegistrationStatus");
+		String regId = app.getOptions().get("RegistrationId");
+		
+		if(regId == null || regId.contentEquals("")){
+			// Nothing to do.
+		}
+		else{
+			if(regStatus == null || regStatus.contentEquals("")){
+				SaveRegIdCommand saveRegId = new SaveRegIdCommand(dummy,regId);
+				command.addCommand(saveRegId);
+			}
+		}
+		
+		Command availCommand = new FetchAvailabilityCommand(dummy);
+		command.addCommand(availCommand);
+		
+		ce.execute(command);
+		
+		PPApplication.getInstance().setExecutingCommand(command);
 	}
 
 	@Override
