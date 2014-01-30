@@ -45,11 +45,13 @@ public class PNRStatusCommand extends Command {
 
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost("http://www.indianrail.gov.in/cgi_bin/inet_pnrstat_cgi.cgi");
+		HttpPost httppost = new HttpPost("http://www.indianrail.gov.in/cgi_bin/inet_pnstat_cgi_28688.cgi");
 
 		// Try to Post the PNR
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("lccp_pnrno1", pnr));
+		nameValuePairs.add(new BasicNameValuePair("lccp_cap_val", "51213"));
+		nameValuePairs.add(new BasicNameValuePair("lccp_capinp_val", "51213"));
 		httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		httppost.setHeader("Referer","http://www.indianrail.gov.in/pnr_Enq.html");
 

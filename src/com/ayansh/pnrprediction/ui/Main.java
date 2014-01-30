@@ -226,6 +226,8 @@ public class Main extends Activity implements OnClickListener {
 					trainNo.setText(result.getData().getString("TrainNo"));
 					currentStatus.setText(result.getData().getString("CurrentStatus"));
 					travel_date.setText(result.getData().getString("TravelDate"));
+					fromStation.setText(result.getData().getString("FromStation"));
+					toStation.setText(result.getData().getString("ToStation"));
 					
 					String[] tcl = getResources().getStringArray(R.array.travel_class);
 					for(int i=0; i< tcl.length; i++){

@@ -141,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="55"
                 android:ems="10"
-                android:hint="@string/fromStation"
+                android:hint="@string/station_code"
                 android:inputType="textCapCharacters"
                 android:maxLength="5" >
             </EditText>
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="55"
                 android:ems="10"
-                android:hint="@string/toStation"
+                android:hint="@string/station_code"
                 android:inputType="textCapCharacters"
                 android:maxLength="5" >
             </EditText>
