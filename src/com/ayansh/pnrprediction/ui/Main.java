@@ -223,8 +223,17 @@ public class Main extends Activity implements OnClickListener {
 				dialog.dismiss();
 				if(result.isCommandExecutionSuccess()){
 					
+					String pnr = result.getData().getString("CurrentStatus");
+					
+					// remove all spaces
+					pnr = pnr.replaceAll(" ", "");
+					
+					if(pnr.contains("W/L")){
+						pnr = pnr.replace("W/L", "WL");
+					}
+					
 					trainNo.setText(result.getData().getString("TrainNo"));
-					currentStatus.setText(result.getData().getString("CurrentStatus"));
+					currentStatus.setText(pnr);
 					travel_date.setText(result.getData().getString("TravelDate"));
 					fromStation.setText(result.getData().getString("FromStation"));
 					toStation.setText(result.getData().getString("ToStation"));
