@@ -113,6 +113,9 @@ public class CalculateProbabilityCommand extends Command {
 		result.getData().putInt("ResultCode", output.getInt("ResultCode"));
 		result.getData().putString("RAC", output.getString("RACProbability"));
 		result.getData().putString("CNF", output.getString("CNFProbability"));
+		result.getData().putString("OptRAC", output.getString("OptimisticRACProbability"));
+		result.getData().putString("OptCNF", output.getString("OptimisticCNFProbability"));
+		result.getData().putString("ExpectedStatus", output.getString("ExpectedStatus"));
 		result.getData().putString("Message", output.getString("Message"));
 	}
 

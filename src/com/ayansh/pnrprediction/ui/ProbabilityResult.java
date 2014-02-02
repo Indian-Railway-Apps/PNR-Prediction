@@ -136,6 +136,9 @@ public class ProbabilityResult extends Activity implements Invoker {
 				
 				resultView.append("\n\nProbability of getting confirmed ticket is: " + result.getData().getString("CNF"));
 				resultView.append("\nProbability of getting RAC ticket is: " + result.getData().getString("RAC"));
+				resultView.append("\nOptimistically speaking, Probability of getting confirmed ticket is: " + result.getData().getString("OptCNF"));
+				resultView.append("\nOptimistically speaking, Probability of getting RAC ticket is: " + result.getData().getString("OptRAC"));
+				resultView.append("\nOn the date of travel, expected status is: " + result.getData().getString("ExpectedStatus"));
 				
 				//resultView.append("\nThe accuracy of this calculation is: 90%");
 				
