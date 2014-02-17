@@ -45,7 +45,7 @@ public class PNRStatusCommand extends Command {
 
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost("http://www.indianrail.gov.in/cgi_bin/inet_pnstat_cgi_28688.cgi");
+		HttpPost httppost = new HttpPost("http://www.indianrail.gov.in/cgi_bin/inet_pnstat_cgi_690.cgi");
 
 		// Try to Post the PNR
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);

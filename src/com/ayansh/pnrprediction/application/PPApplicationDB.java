@@ -20,7 +20,7 @@ import android.util.Log;
 public class PPApplicationDB extends SQLiteOpenHelper {
 
 	private static final String dbName = "PNR-Prediction";
-	private static final int dbVersion = 1;
+	private static final int dbVersion = 2;
 	
 	private static PPApplicationDB appDB;
 	
@@ -81,13 +81,54 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+		switch(oldVersion){
+		
+		case 1:
+			/*
+			 * Adding a new table to save PNR details
+			 */
+			String createPNRTrable = "CREATE TABLE PNR (" + 
+					"PNR VARCHAR , " + // PNR No
+					"TrainNo VARCHAR, "  +
+					"TravelDate VARCHAR, "  +
+					"TravelClass VARCHAR, "  +
+					"CurrentStatus VARCHAR, "  +
+					"FromStation VARCHAR, "  +
+					"ToStation VARCHAR, "  +
+					"CNFProbability REAL, "  +
+					"RACProbability REAL, "  +
+					"OptCNFProbability REAL, "  +
+					"OptRACProbability REAL, "  +
+					"ExpectedStatus VARCHAR, "  +
+					"LastUpdate INTEGER, "  +
+					"PRIMARY KEY (PNR)" +
+					")";
+			
+			try {
+				// Upgrading database to version 2
+				Log.i(PPApplication.TAG, "Upgrading DB from version 1 to 2");
+					
+				db.execSQL(createPNRTrable);
+							
+				Log.i(PPApplication.TAG, "Upgrade successfully");
+
+			} catch (SQLException e) {
+				// Oops !!
+				Log.e(PPApplication.TAG, e.getMessage(), e);
+			}
+			
+			/*
+			 * Very important - No break statement here !
+			 */
+		
+		}
 	}
 
 	void openDBForWriting(){
 		db = appDB.getWritableDatabase();
 	}
 	
-synchronized void loadOptions(){
+	synchronized void loadOptions(){
 		
 		if(!db.isOpen()){
 			return;
@@ -139,6 +180,25 @@ synchronized void loadOptions(){
 			db.endTransaction();
 			return false;
 		}
+	}
+
+	boolean checkPNRExists(String pnr) {
+		
+		String[] columns = {"PNR"};
+		String selection = "PNR='" + pnr + "'";
+		
+		Cursor cursor = db.query("PNR", columns, selection, null, null, null, null);
+		
+		int count = cursor.getCount();
+		cursor.close();
+		
+		if(count > 0){
+			return true;
+		}
+		else{
+			return false;
+		}
+		
 	}
 
 }

@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -117,6 +118,61 @@ public class CalculateProbabilityCommand extends Command {
 		result.getData().putString("OptCNF", output.getString("OptimisticCNFProbability"));
 		result.getData().putString("ExpectedStatus", output.getString("ExpectedStatus"));
 		result.getData().putString("Message", output.getString("Message"));
+		
+		if(PNR == null || PNR.contentEquals("")){
+			// No PNR.
+			return;
+		}
+		
+		// Save this in DB
+		PPApplicationDB db = PPApplicationDB.getInstance();
+		
+		List<String> queries = new ArrayList<String>();
+		
+		long time = new GregorianCalendar().getTimeInMillis();
+		
+		if(db.checkPNRExists(PNR)){
+			
+			// Update Existing entry
+			
+			String query = "UPDATE PNR SET " +
+					"CurrentStatus='" + currentStatus + "'," +
+					"CNFProbability=" + output.getString("CNFProbability") + "," +
+					"RACProbability=" + output.getString("RACProbability") + "," +
+					"OptCNFProbability=" + output.getString("OptimisticCNFProbability") + "," +
+					"OptRACProbability=" + output.getString("OptimisticRACProbability") + "," +
+					"ExpectedStatus='" + output.getString("ExpectedStatus") + "'," +
+					"LastUpdate=" + time + " " +
+					"WHERE PNR='" + PNR + "'";
+			
+			queries.add(query);
+			
+		}
+		
+		else{
+			
+			// Insert New Entry
+			String query = "INSERT INTO PNR VALUES(" +
+					"'" + PNR + "'," +
+					"'" + trainNo + "'," +
+					"'" + travelDate + "'," +
+					"'" + trainClass + "'," +
+					"'" + currentStatus + "'," +
+					"'" + fromStation + "'," +
+					"'" + toStation + "'," +
+					"" + output.getString("CNFProbability") + "," +
+					"" + output.getString("RACProbability") + "," +
+					"" + output.getString("OptimisticCNFProbability") + "," +
+					"" + output.getString("OptimisticRACProbability") + "," +
+					"'" + output.getString("ExpectedStatus") + "'," +
+					"" + time + "" +
+					")";
+			
+			queries.add(query);
+		}
+		
+		db.executeQueries(queries);
+
 	}
 
 }
