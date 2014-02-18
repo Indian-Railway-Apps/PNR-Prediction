@@ -3,7 +3,9 @@
  */
 package com.ayansh.pnrprediction.application;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -96,6 +98,7 @@ public class PPApplication {
 
 	public void close() {
 		appDB.close();
+		context = null;
 	}
 
 	// Add parameter
@@ -180,6 +183,42 @@ public class PPApplication {
 			GCMRegistrar.register(context, SenderId);
 		}
 				
+	}
+
+	public List<PNR> getPNRList() {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
+		ArrayList<PNR> pnrList = appDB.getPNRList();
+		
+		ArrayList<PNR> newList = new ArrayList<PNR>(); 
+		
+		for(int i=0; i<pnrList.size(); i++){
+			
+			PNR pnr = pnrList.get(i);
+			
+			try {
+				
+				Date travelDate = sdf.parse(pnr.getTravelDate());
+				Date now = new Date();
+				
+				if(now.compareTo(travelDate) < 0){
+					// This is in future. Keep this.
+					newList.add(pnr);
+				}
+				else{
+					// Remove this
+					appDB.deletePNR(pnr.getPnr());
+				}
+				
+			} catch (Exception e) {
+				
+			}
+			
+		}
+		
+		return newList;
+		
 	}
 
 }

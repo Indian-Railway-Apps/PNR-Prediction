@@ -25,7 +25,6 @@ import com.google.analytics.tracking.android.EasyTracker;
 public class SplashScreen extends Activity implements
 		OnIabSetupFinishedListener, QueryInventoryFinishedListener {
 
-	private PPApplication app;
 	private IabHelper billingHelper;
 	private TextView statusView;
 	private boolean appStarted = false;
@@ -41,7 +40,7 @@ public class SplashScreen extends Activity implements
 		statusView.setText("Initializing");
 			
         // Get Application Instance.
-        app = PPApplication.getInstance();
+		PPApplication app = PPApplication.getInstance();
         
         // Set the context of the application
         app.setContext(getApplicationContext());
@@ -67,7 +66,7 @@ public class SplashScreen extends Activity implements
 	private void startSplashScreenActivity() {
 		
 		// Register application.
-        app.registerAppForGCM();
+		PPApplication.getInstance().registerAppForGCM();
         
 		// Instantiate billing helper class
 		billingHelper = IabHelper.getInstance(this, Constants.getPublicKey());
@@ -93,6 +92,8 @@ public class SplashScreen extends Activity implements
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
+		PPApplication app = PPApplication.getInstance();
+		
 		switch (requestCode) {
 
 		case 100:
@@ -116,6 +117,8 @@ public class SplashScreen extends Activity implements
 	}
 	
 	private void startApp() {
+		
+		PPApplication app = PPApplication.getInstance();
 		
 		if(appStarted){
 			return;

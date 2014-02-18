@@ -3,9 +3,11 @@
  */
 package com.ayansh.pnrprediction.application;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -198,6 +200,54 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 		else{
 			return false;
 		}
+		
+	}
+
+	@SuppressLint("SimpleDateFormat")
+	ArrayList<PNR> getPNRList() {
+		
+		ArrayList<PNR> pnrList = new ArrayList<PNR>();
+		
+		String sql = "SELECT * FROM PNR";
+		
+		Cursor cursor = db.rawQuery(sql, null);
+		
+		if(cursor.moveToFirst()){
+			
+			do{
+				
+				PNR pnr = new PNR(cursor.getString(cursor.getColumnIndex("PNR")));
+				
+				pnr.setTrainNo(cursor.getString(cursor.getColumnIndex("TrainNo")));
+				pnr.setTravelDate(cursor.getString(cursor.getColumnIndex("TravelDate")));
+				pnr.setTrainClass(cursor.getString(cursor.getColumnIndex("TravelClass")));
+				pnr.setCurrentStatus(cursor.getString(cursor.getColumnIndex("CurrentStatus")));
+				pnr.setFromStation(cursor.getString(cursor.getColumnIndex("FromStation")));
+				pnr.setToStation(cursor.getString(cursor.getColumnIndex("ToStation")));
+				pnr.setCnfProb(cursor.getFloat(cursor.getColumnIndex("CNFProbability")));
+				pnr.setRacProb(cursor.getFloat(cursor.getColumnIndex("RACProbability")));
+				pnr.setOptCNFProb(cursor.getFloat(cursor.getColumnIndex("OptCNFProbability")));
+				pnr.setOptRACProb(cursor.getFloat(cursor.getColumnIndex("OptRACProbability")));
+				pnr.setExpectedStatus(cursor.getString(cursor.getColumnIndex("ExpectedStatus")));
+				pnr.setLastUpdate(cursor.getLong(cursor.getColumnIndex("LastUpdate")));
+				
+				pnrList.add(pnr);
+				
+			}while(cursor.moveToNext());
+			
+		}
+		
+		cursor.close();
+		
+		return pnrList;
+		
+	}
+
+	void deletePNR(String pnr) {
+		
+		String where = "PNR='" + pnr + "'";
+		
+		db.delete("PNR", where, null);
 		
 	}
 

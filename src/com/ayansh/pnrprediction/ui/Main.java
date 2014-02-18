@@ -1,7 +1,7 @@
 package com.ayansh.pnrprediction.ui;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.CommandExecuter;
@@ -11,24 +11,19 @@ import org.varunverma.CommandExecuter.ProgressInfo;
 import org.varunverma.CommandExecuter.ResultObject;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.ayansh.pnrprediction.R;
 import com.ayansh.pnrprediction.application.Constants;
-import com.ayansh.pnrprediction.application.PNRStatusCommand;
+import com.ayansh.pnrprediction.application.PNR;
 import com.ayansh.pnrprediction.application.PPApplication;
 import com.ayansh.pnrprediction.application.SaveRegIdCommand;
 import com.ayansh.pnrprediction.avail.FetchAvailabilityCommand;
@@ -37,12 +32,11 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class Main extends Activity implements OnClickListener {
+public class Main extends Activity implements OnItemClickListener {
 
-	private TextView pnrNo, trainNo, currentStatus, fromStation, toStation;
-	private Button travel_date;
-	private Spinner travelClass;
-	private ProgressDialog dialog;
+	private ListView listView;
+	private PNRListAdapter adapter;
+	private List<PNR> pnrList;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,26 +64,21 @@ public class Main extends Activity implements OnClickListener {
 			adView.loadAd(adRequest);
 		}
 		
-		Button getPNR = (Button) findViewById(R.id.get_pnr_details);
-		getPNR.setOnClickListener(this);
+		pnrList = new ArrayList<PNR>();
 		
-		travel_date = (Button) findViewById(R.id.travel_date);
-		travel_date.setOnClickListener(this);
+		pnrList.addAll(PPApplication.getInstance().getPNRList());
 		
-		GregorianCalendar c = new GregorianCalendar();
-		int month = c.get(Calendar.MONTH) + 1;
-		travel_date.setText(c.get(Calendar.DATE) + "-" + month + "-" + c.get(Calendar.YEAR));
+		pnrList.add(0, new PNR("DUMMY"));	// Dummy Entry
 		
-		pnrNo = (TextView) findViewById(R.id.pnr_no);
-		trainNo = (TextView) findViewById(R.id.train_no);
-		currentStatus = (TextView) findViewById(R.id.current_status);
-		fromStation = (TextView) findViewById(R.id.from_station);
-		toStation = (TextView) findViewById(R.id.to_station);
+		listView = (ListView) findViewById(R.id.pnr_list);
 		
-		Button predictStatus = (Button) findViewById(R.id.predict_status);
-		predictStatus.setOnClickListener(this);
+		adapter = new PNRListAdapter(this, R.layout.pnrlistrow, R.id.pnr_no, pnrList);
 		
-		travelClass = (Spinner) findViewById(R.id.travel_class);
+		listView.setAdapter(adapter);
+		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		
+		listView.setOnItemClickListener(this);
+		
 	}
 
 	private void fetchAvailability() {
@@ -180,184 +169,26 @@ public class Main extends Activity implements OnClickListener {
 		
 	}
 
-	@Override
-	public void onClick(View view) {
-		
-		switch(view.getId()){
-		
-		case R.id.get_pnr_details:
-			getPNRDetails();
-			break;
-			
-		case R.id.travel_date:
-			getTravelDateFromUser();
-			break;
-			
-		case R.id.predict_status:
-			predictStatus();
-			break;
-		
-		}
-		
-	}
-
-	private void getPNRDetails() {
-		
-		String pnr = pnrNo.getEditableText().toString();
-		
-		if(pnr.length() < 10){
-			// Error !
-			Toast.makeText(this, "Wrong PNR", Toast.LENGTH_LONG).show();
-			return;
-		}
-		
-		dialog = ProgressDialog.show(this, "Fetching PNR Details", "Please wait while we fetch PNR Details");
-		
-		CommandExecuter ce = new CommandExecuter();
-		
-		PNRStatusCommand command = new PNRStatusCommand(new Invoker(){
-
-			@Override
-			public void NotifyCommandExecuted(ResultObject result) {
-				
-				dialog.dismiss();
-				if(result.isCommandExecutionSuccess()){
-					
-					String pnr = result.getData().getString("CurrentStatus");
-					
-					// remove all spaces
-					pnr = pnr.replaceAll(" ", "");
-					
-					if(pnr.contains("W/L")){
-						pnr = pnr.replace("W/L", "WL");
-					}
-					
-					trainNo.setText(result.getData().getString("TrainNo"));
-					currentStatus.setText(pnr);
-					travel_date.setText(result.getData().getString("TravelDate"));
-					fromStation.setText(result.getData().getString("FromStation"));
-					toStation.setText(result.getData().getString("ToStation"));
-					
-					String[] tcl = getResources().getStringArray(R.array.travel_class);
-					for(int i=0; i< tcl.length; i++){
-						
-						if(tcl[i].contentEquals(result.getData().getString("TravelClass"))){
-							travelClass.setSelection(i);
-							break;
-						}
-					}
-					
-				}
-				else{
-					Toast.makeText(getApplicationContext(), "Error while getting PNR Status", Toast.LENGTH_LONG).show();
-				}
-				
-			}
-
-			@Override
-			public void ProgressUpdate(ProgressInfo progress) {				
-			}}, pnr);
-		
-		ce.execute(command);
-	}
-
-	private void predictStatus() {
-		
-		// Validate input.
-		try {
-			
-			validateInput();
-			
-		} catch (Exception e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-			return;
-		}
-		
-		String[] tclass = getResources().getStringArray(R.array.travel_class);
-		
-		String tNo = trainNo.getEditableText().toString();
-		String tCl = tclass[travelClass.getSelectedItemPosition()];
-		String cSt = currentStatus.getEditableText().toString();
-		String pnr = pnrNo.getEditableText().toString();
-		String fs = fromStation.getEditableText().toString();
-		String ts = toStation.getEditableText().toString();
-		
-		CharSequence tDt = travel_date.getText();
-		
-		Intent probResult = new Intent(Main.this, ProbabilityResult.class);
-		
-		probResult.putExtra("PNR", pnr);
-		probResult.putExtra("TrainNo", tNo);
-		probResult.putExtra("TravelDate", tDt);
-		probResult.putExtra("TravelClass", tCl);
-		probResult.putExtra("CurrentStatus", cSt);
-		probResult.putExtra("FromStation", fs);
-		probResult.putExtra("ToStation", ts);
-		
-		startActivity(probResult);
-		
-	}
-	
-	private void validateInput() throws Exception{
-	
-		// Check that train no is populated and is 5 char.
-		String tNo = trainNo.getEditableText().toString();
-		if(tNo == null || tNo.length() < 5){
-			throw new Exception("Train number is not valid");
-		}
-		
-		// Check the current status
-		String cSt = currentStatus.getEditableText().toString();
-		if(cSt.contains("WL") || cSt.contains("RAC")){
-			// This is ok
-		}
-		else{
-			throw new Exception("Current status is not in correct format.");
-		}
-		
-		// Check From Station and to Station
-		String fs = fromStation.getEditableText().toString();
-		String ts = toStation.getEditableText().toString();
-		
-		if(fs == null || fs.contentEquals("")){
-			throw new Exception("Please enter From Station Code");
-		}
-		
-		if(ts == null || ts.contentEquals("")){
-			throw new Exception("Please enter To Station Code");
-		}
-	}
-
-	private void getTravelDateFromUser() {
-		
-		GregorianCalendar c = new GregorianCalendar();
-		
-		int year = c.get(Calendar.YEAR);
-		int month = c.get(Calendar.MONTH);
-		int day = c.get(Calendar.DAY_OF_MONTH);
-		
-		DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener(){
-
-			@Override
-			public void onDateSet(DatePicker view, int year, int month, int day) {
-				
-				travel_date.setText(day + "-" + ++month + "-" + year);
-				
-			}}, year, month, day);
-		
-		dialog.show();
-	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		switch (requestCode) {
 
+		case 100:
+			
+			pnrList.clear();
+			pnrList.addAll(PPApplication.getInstance().getPNRList());
+			pnrList.add(0, new PNR("DUMMY"));
+			
+			adapter.notifyDataSetChanged();
+			break;
+			
 		case 900:
 			if (data.getBooleanExtra("RestartApp", false)) {
 				finish();
 			}
 			break;
-
+			
 		}
 	}
 
@@ -387,4 +218,21 @@ public class Main extends Activity implements OnClickListener {
 		// The rest of your onStop() code.
 		EasyTracker.getInstance().activityStop(this);
 	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+		
+		if(pos == 0){
+			// New PNR
+			
+			Intent newPNR = new Intent(Main.this, NewPNR.class);
+			Main.this.startActivityForResult(newPNR, 100);
+			
+		}
+		else{
+			
+		}
+		
+	}
+	
 }

@@ -16,6 +16,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -42,10 +43,12 @@ public class PNRStatusCommand extends Command {
 		if (pnr.length() < 10) {
 			throw new Exception("Wrong PNR Number!");
 		}
+		
+		String url = getPNREnquiryURL();
 
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost("http://www.indianrail.gov.in/cgi_bin/inet_pnstat_cgi_690.cgi");
+		HttpPost httppost = new HttpPost(url);
 
 		// Try to Post the PNR
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -151,6 +154,32 @@ public class PNRStatusCommand extends Command {
 
 		}
 
+	}
+
+	private String getPNREnquiryURL() throws Exception {
+		
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpGet httpget = new HttpGet("http://ayansh.com/pnr-prediction/get_pnr_enquiry_url.php");
+		
+		// Execute HTTP Post Request
+		HttpResponse response = httpclient.execute(httpget);
+
+		// Open Stream for Reading.
+		InputStream is = response.getEntity().getContent();
+
+		// Get Input Stream Reader.
+		InputStreamReader isr = new InputStreamReader(is);
+
+		BufferedReader reader = new BufferedReader(isr);
+
+		StringBuilder builder = new StringBuilder();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			builder.append(line);
+		}
+		
+		return builder.toString();
+		
 	}
 
 }
