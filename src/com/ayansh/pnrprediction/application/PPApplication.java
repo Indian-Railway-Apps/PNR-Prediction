@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.varunverma.CommandExecuter.Command;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
@@ -19,73 +20,74 @@ import com.google.android.gcm.GCMRegistrar;
 
 /**
  * @author Varun Verma
- *
+ * 
  */
 public class PPApplication {
 
 	private static PPApplication app;
 	public static final String TAG = "PNR";
 	public final static String SenderId = "492119277184";
-	
+
 	private Context context;
 	private Command executingCommand;
 	private PPApplicationDB appDB;
-	
-	HashMap<String,String> Options;
-	
-	public static PPApplication getInstance(){
-		
-		if(app == null){
+	private ArrayList<PNR> pnrList;
+
+	HashMap<String, String> Options;
+
+	public static PPApplication getInstance() {
+
+		if (app == null) {
 			app = new PPApplication();
 		}
-		
+
 		return app;
 	}
-	
+
 	/**
 	 * 
 	 */
 	private PPApplication() {
-		
-		Options = new HashMap<String,String>();
+
+		Options = new HashMap<String, String>();
 	}
 
-	public void setContext(Context c){
-		
-		if(context == null){
-			
+	public void setContext(Context c) {
+
+		if (context == null) {
+
 			context = c;
-			
+
 			// Initialize the DB.
 			appDB = PPApplicationDB.getInstance(context);
 			appDB.openDBForWriting();
 			appDB.loadOptions();
 		}
 	}
-	
-	public void setExecutingCommand(Command c){
-		
+
+	public void setExecutingCommand(Command c) {
+
 		executingCommand = c;
-		
+
 	}
-	
-	public Context getContext(){
+
+	public Context getContext() {
 		return context;
 	}
-	
-	public Command getExecutingCommand(){
+
+	public Command getExecutingCommand() {
 		return executingCommand;
 	}
-	
+
 	// Get all Options
 	public HashMap<String, String> getOptions() {
 		return Options;
 	}
 
 	public boolean isEULAAccepted() {
-		
+
 		String eula = Options.get("EULA");
-		if(eula == null || eula.contentEquals("")){
+		if (eula == null || eula.contentEquals("")) {
 			eula = "false";
 		}
 		return Boolean.valueOf(Options.get("EULA"));
@@ -93,7 +95,7 @@ public class PPApplication {
 
 	public void setEULAResult(boolean result) {
 		// Save EULA Result
-		addParameter("EULA", String.valueOf(result));	
+		addParameter("EULA", String.valueOf(result));
 	}
 
 	public void close() {
@@ -102,60 +104,63 @@ public class PPApplication {
 	}
 
 	// Add parameter
-	public boolean addParameter(String paramName, String paramValue){
-		
+	public boolean addParameter(String paramName, String paramValue) {
+
 		List<String> queries = new ArrayList<String>();
 		String query = "";
-		
-		if(Options.containsKey(paramName)){
+
+		if (Options.containsKey(paramName)) {
 			// Already exists. Update it.
-			query = "UPDATE Options SET ParamValue = '" + paramValue + "' WHERE ParamName = '" + paramName + "'";
-		}
-		else{
+			query = "UPDATE Options SET ParamValue = '" + paramValue
+					+ "' WHERE ParamName = '" + paramName + "'";
+		} else {
 			// New entry. Create it
-			query = "INSERT INTO Options (ParamName, ParamValue) VALUES ('" + paramName + "','" + paramValue + "')";
+			query = "INSERT INTO Options (ParamName, ParamValue) VALUES ('"
+					+ paramName + "','" + paramValue + "')";
 		}
-		
+
 		queries.add(query);
 		boolean success = appDB.executeQueries(queries);
-		
-		if(success){
+
+		if (success) {
 			Options.put(paramName, paramValue);
 		}
-		
+
 		return success;
-		
+
 	}
-	
-	public boolean removeParameter(String paramName){
-		
+
+	public boolean removeParameter(String paramName) {
+
 		List<String> queries = new ArrayList<String>();
-		
-		String query = "DELETE FROM Options WHERE ParamName = '" + paramName + "'";
+
+		String query = "DELETE FROM Options WHERE ParamName = '" + paramName
+				+ "'";
 		queries.add(query);
 		boolean success = appDB.executeQueries(queries);
-		
-		if(success){
+
+		if (success) {
 			Options.remove(paramName);
 		}
-		
+
 		return success;
 	}
-	
+
 	public int getOldAppVersion() {
 		String versionCode = Options.get("AppVersionCode");
-		if(versionCode == null || versionCode.contentEquals("")){
+		if (versionCode == null || versionCode.contentEquals("")) {
 			versionCode = "0";
 		}
 		return Integer.valueOf(versionCode);
 	}
-	
+
 	public void updateVersion() {
 		// Update Version
-		
+
 		int version;
 		try {
-			version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+			version = context.getPackageManager().getPackageInfo(
+					context.getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
 			version = 0;
 			Log.e(TAG, e.getMessage(), e);
@@ -165,7 +170,7 @@ public class PPApplication {
 	}
 
 	public void registerAppForGCM() {
-		
+
 		// Register this app
 		String regId1 = Options.get("RegistrationId");
 		String regId2 = GCMRegistrar.getRegistrationId(context);
@@ -182,43 +187,58 @@ public class PPApplication {
 			// Register
 			GCMRegistrar.register(context, SenderId);
 		}
-				
+
 	}
 
-	public List<PNR> getPNRList() {
+	public List<PNR> getPNRList(boolean reload) {
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		
-		ArrayList<PNR> pnrList = appDB.getPNRList();
-		
-		ArrayList<PNR> newList = new ArrayList<PNR>(); 
-		
-		for(int i=0; i<pnrList.size(); i++){
+		if(reload){
 			
-			PNR pnr = pnrList.get(i);
+			return getPNRList();
 			
-			try {
-				
-				Date travelDate = sdf.parse(pnr.getTravelDate());
-				Date now = new Date();
-				
-				if(now.compareTo(travelDate) < 0){
-					// This is in future. Keep this.
-					newList.add(pnr);
-				}
-				else{
-					// Remove this
-					appDB.deletePNR(pnr.getPnr());
-				}
-				
-			} catch (Exception e) {
-				
-			}
+		}
+		else{
+			
+			return pnrList;
 			
 		}
 		
-		return newList;
-		
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	private List<PNR> getPNRList() {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+		ArrayList<PNR> list = appDB.getPNRList();
+
+		pnrList = new ArrayList<PNR>();
+
+		for (int i = 0; i < list.size(); i++) {
+
+			PNR pnr = list.get(i);
+
+			try {
+
+				Date travelDate = sdf.parse(pnr.getTravelDate());
+				Date now = new Date();
+
+				if (now.compareTo(travelDate) < 0) {
+					// This is in future. Keep this.
+					pnrList.add(pnr);
+				} else {
+					// Remove this
+					appDB.deletePNR(pnr.getPnr());
+				}
+
+			} catch (Exception e) {
+
+			}
+
+		}
+
+		return pnrList;
+
 	}
 
 }

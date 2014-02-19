@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="20"
                 android:contentDescription="@string/enter_pnr"
-                android:text="Go" />
+                android:text="@string/go" />
         </LinearLayout>
 
         <LinearLayout

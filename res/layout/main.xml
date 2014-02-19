@@ -22,8 +22,7 @@
         android:animateLayoutChanges="true"
         android:divider="@color/black"
         android:dividerHeight="1dp"
-        android:fastScrollEnabled="true"
-        android:listSelector="@drawable/list_selector" >
+        android:fastScrollEnabled="true" >
     </ListView>
 
 </RelativeLayout>

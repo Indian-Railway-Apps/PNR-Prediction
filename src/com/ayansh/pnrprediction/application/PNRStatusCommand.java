@@ -145,6 +145,13 @@ public class PNRStatusCommand extends Command {
 			travelClass = travelClass.replaceAll(" ", "");
 			travelClass = travelClass.substring(0, 2);
 			
+			// remove all spaces
+			currentStatus = currentStatus.replaceAll(" ", "");
+			
+			if(currentStatus.contains("W/L")){
+				currentStatus = currentStatus.replace("W/L", "WL");
+			}
+			
 			result.getData().putString("TrainNo", train_number);
 			result.getData().putString("FromStation", from);
 			result.getData().putString("ToStation", to);

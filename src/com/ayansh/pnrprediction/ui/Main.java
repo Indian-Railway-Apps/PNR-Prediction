@@ -45,6 +45,8 @@ public class Main extends Activity implements OnItemClickListener {
 		
 		setContentView(R.layout.main);
 		
+		setTitle("PNR List");
+		
 		// Tracking.
         EasyTracker.getInstance().activityStart(this);
         
@@ -66,7 +68,7 @@ public class Main extends Activity implements OnItemClickListener {
 		
 		pnrList = new ArrayList<PNR>();
 		
-		pnrList.addAll(PPApplication.getInstance().getPNRList());
+		pnrList.addAll(PPApplication.getInstance().getPNRList(true));
 		
 		pnrList.add(0, new PNR("DUMMY"));	// Dummy Entry
 		
@@ -177,7 +179,7 @@ public class Main extends Activity implements OnItemClickListener {
 		case 100:
 			
 			pnrList.clear();
-			pnrList.addAll(PPApplication.getInstance().getPNRList());
+			pnrList.addAll(PPApplication.getInstance().getPNRList(true));
 			pnrList.add(0, new PNR("DUMMY"));
 			
 			adapter.notifyDataSetChanged();
@@ -231,6 +233,9 @@ public class Main extends Activity implements OnItemClickListener {
 		}
 		else{
 			
+			Intent pnrDetails = new Intent(Main.this, PNRDetails.class);
+			pnrDetails.putExtra("Position", pos-1);
+			Main.this.startActivityForResult(pnrDetails,100);
 		}
 		
 	}

@@ -62,12 +62,30 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 				"ParamValue VARCHAR(20)" + // Parameter Value
 				")";
 
+		String createPNRTrable = "CREATE TABLE PNR (" + 
+				"PNR VARCHAR , " + // PNR No
+				"TrainNo VARCHAR, "  +
+				"TravelDate VARCHAR, "  +
+				"TravelClass VARCHAR, "  +
+				"CurrentStatus VARCHAR, "  +
+				"FromStation VARCHAR, "  +
+				"ToStation VARCHAR, "  +
+				"CNFProbability REAL, "  +
+				"RACProbability REAL, "  +
+				"OptCNFProbability REAL, "  +
+				"OptRACProbability REAL, "  +
+				"ExpectedStatus VARCHAR, "  +
+				"LastUpdate INTEGER, "  +
+				"PRIMARY KEY (PNR)" +
+				")";
+		
 		// create a new table - if not existing
 		try {
 			// Create Tables.
 			Log.i(PPApplication.TAG,"Creating Tables for Version:" + String.valueOf(dbVersion));
 
 			db.execSQL(createOptionsTable);
+			db.execSQL(createPNRTrable);
 
 			Log.i(PPApplication.TAG, "Tables created successfully");
 

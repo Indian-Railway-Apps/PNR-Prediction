@@ -64,14 +64,14 @@ public class PNRListAdapter extends ArrayAdapter<PNR> {
 		if(pnr.getPnr().contentEquals("DUMMY")){
 			
 			LinearLayout ll = (LinearLayout) rowView.findViewById(R.id.trdate);
-			ll.setVisibility(View.GONE);
+			ll.setBackgroundResource(R.drawable.new_pnr);
 			
 			travelDate.setVisibility(View.GONE);
 			travelMonth.setVisibility(View.GONE);
 			lastUpdate.setVisibility(View.GONE);
 			
-			pnrNo.setText("Add new PNR");
-			currentStatus.setText("Click to add new PNR");
+			pnrNo.setText("New PNR");
+			currentStatus.setText("Click to predict status for new PNR");
 			
 		}
 		else{

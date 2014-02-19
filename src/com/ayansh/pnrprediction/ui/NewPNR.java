@@ -174,13 +174,6 @@ public class NewPNR extends Activity implements OnClickListener {
 					
 					String pnr = result.getData().getString("CurrentStatus");
 					
-					// remove all spaces
-					pnr = pnr.replaceAll(" ", "");
-					
-					if(pnr.contains("W/L")){
-						pnr = pnr.replace("W/L", "WL");
-					}
-					
 					trainNo.setText(result.getData().getString("TrainNo"));
 					currentStatus.setText(pnr);
 					travel_date.setText(result.getData().getString("TravelDate"));

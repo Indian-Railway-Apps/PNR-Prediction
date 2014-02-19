@@ -21,6 +21,8 @@
     <string name="ayansh">By Varun Verma</string>
     <string name="cancel">Cancel</string>
     <string name="accept">I Agree</string>
+    <string name="update_pnr_status">Update</string>
+    <string name="go">Go</string>
     
     <string-array name="travel_class">
         <item>1A</item>
