@@ -105,7 +105,7 @@ public class PNRDetails extends Activity implements OnClickListener, Invoker {
 		}
 		
 		String probability = "CNF Probability - " + pnr.getCnfProb() + "\n"
-							+ "RAC Probability - " + pnr.getCnfProb() + "\n"
+							+ "RAC Probability - " + pnr.getRacProb() + "\n"
 							+ "Optimistic CNF Probability - " + pnr.getOptCNFProb() + "\n"
 							+ "Optimistic RAC Probability - " + pnr.getOptRACProb() + "\n";
 
@@ -242,13 +242,13 @@ public class PNRDetails extends Activity implements OnClickListener, Invoker {
 				pnr.setCnfProb(Float.valueOf(result.getData().getString("CNF")));
 				pnr.setRacProb(Float.valueOf(result.getData().getString("RAC")));
 				pnr.setOptCNFProb(Float.valueOf(result.getData().getString("OptCNF")));
-				pnr.setOptRACProb(Float.valueOf(result.getData().getString("OptCNF")));
+				pnr.setOptRACProb(Float.valueOf(result.getData().getString("OptRAC")));
 				pnr.setExpectedStatus(result.getData().getString("ExpectedStatus"));
 				
 				currentStatus.setText("Status : " + pnr.getCurrentStatus());
 				
 				String probability = "CNF Probability - " + pnr.getCnfProb() + "\n"
-									+ "RAC Probability - " + pnr.getCnfProb() + "\n"
+									+ "RAC Probability - " + pnr.getRacProb() + "\n"
 									+ "Optimistic CNF Probability - " + pnr.getOptCNFProb() + "\n"
 									+ "Optimistic RAC Probability - " + pnr.getOptRACProb() + "\n";
 

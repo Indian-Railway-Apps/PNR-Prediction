@@ -62,7 +62,7 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 				"ParamValue VARCHAR(20)" + // Parameter Value
 				")";
 
-		String createPNRTrable = "CREATE TABLE PNR (" + 
+		String createPNRTable = "CREATE TABLE PNR (" + 
 				"PNR VARCHAR , " + // PNR No
 				"TrainNo VARCHAR, "  +
 				"TravelDate VARCHAR, "  +
@@ -85,7 +85,7 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 			Log.i(PPApplication.TAG,"Creating Tables for Version:" + String.valueOf(dbVersion));
 
 			db.execSQL(createOptionsTable);
-			db.execSQL(createPNRTrable);
+			db.execSQL(createPNRTable);
 
 			Log.i(PPApplication.TAG, "Tables created successfully");
 
@@ -107,7 +107,7 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 			/*
 			 * Adding a new table to save PNR details
 			 */
-			String createPNRTrable = "CREATE TABLE PNR (" + 
+			String createPNRTable = "CREATE TABLE PNR (" + 
 					"PNR VARCHAR , " + // PNR No
 					"TrainNo VARCHAR, "  +
 					"TravelDate VARCHAR, "  +
@@ -128,7 +128,7 @@ public class PPApplicationDB extends SQLiteOpenHelper {
 				// Upgrading database to version 2
 				Log.i(PPApplication.TAG, "Upgrading DB from version 1 to 2");
 					
-				db.execSQL(createPNRTrable);
+				db.execSQL(createPNRTable);
 							
 				Log.i(PPApplication.TAG, "Upgrade successfully");
 
