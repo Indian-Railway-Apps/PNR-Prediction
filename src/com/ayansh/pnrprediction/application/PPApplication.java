@@ -5,6 +5,7 @@ package com.ayansh.pnrprediction.application;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -221,6 +222,9 @@ public class PPApplication {
 			try {
 
 				Date travelDate = sdf.parse(pnr.getTravelDate());
+				long t = travelDate.getTime() + 24*60*60*1000;
+				travelDate.setTime(t);
+				
 				Date now = new Date();
 
 				if (now.compareTo(travelDate) < 0) {
@@ -236,7 +240,10 @@ public class PPApplication {
 			}
 
 		}
-
+		
+		// Order by Travel Date
+		Collections.sort(pnrList, PNR.SortByTravelDate);
+		
 		return pnrList;
 
 	}

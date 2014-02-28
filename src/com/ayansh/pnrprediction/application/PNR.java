@@ -1,7 +1,35 @@
 package com.ayansh.pnrprediction.application;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
+
+import android.annotation.SuppressLint;
+
 public class PNR {
 
+	public static Comparator<PNR> SortByTravelDate = new Comparator<PNR>() {
+
+		@SuppressLint("SimpleDateFormat")
+		@Override
+		public int compare(PNR lhs, PNR rhs) {
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			
+			try {
+				
+				Date lhsDate = sdf.parse(lhs.getTravelDate());
+				Date rhsDate = sdf.parse(rhs.getTravelDate());
+				
+				return lhsDate.compareTo(rhsDate);
+				
+			} catch (ParseException e) {
+				return 0;
+			}
+		}
+	};
+	
 	private String pnr, trainNo, travelDate, trainClass, currentStatus, fromStation, toStation, expectedStatus;
 	private float cnfProb, racProb, optCNFProb, optRACProb;
 	private long lastUpdate;
